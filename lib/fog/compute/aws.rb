@@ -241,45 +241,47 @@ module Fog
         private
         
         def request(params)
-          idempotent  = params.delete(:idempotent)
-          parser      = params.delete(:parser)
+            idempotent  = params.delete(:idempotent)
+            parser      = params.delete(:parser)
 
-          body = AWS.signed_params(
-            params,
-            {
-              :aws_access_key_id  => @aws_access_key_id,
-              :hmac               => @hmac,
-              :host               => @host,
-              :path               => @path,
-              :port               => @port,
-              :version            => '2010-08-31'
-            }
-          )
+            body = AWS.signed_params(
+              params,
+              {
+                :aws_access_key_id  => @aws_access_key_id,
+                :hmac               => @hmac,
+                :host               => @host,
+                :path               => @path,
+                :port               => @port,
+                :version            => '2010-08-31'
+              }
+            )
 
-          begin
-            response = @connection.request({
-              :body       => body,
-              :expects    => 200,
-              :headers    => { 'Content-Type' => 'application/x-www-form-urlencoded' },
-              :idempotent => idempotent,
-              :host       => @host,
-              :method     => 'POST',
-              :parser     => parser
-            })
-          rescue Excon::Errors::HTTPStatusError => error
-            if match = error.message.match(/<Code>(.*)<\/Code><Message>(.*)<\/Message>/)
-              raise case match[1].split('.').last
-              when 'NotFound'
-                Fog::AWS::Compute::NotFound.slurp(error, match[2])
+            instrument(params) do
+            begin
+              response = @connection.request({
+                :body       => body,
+                :expects    => 200,
+                :headers    => { 'Content-Type' => 'application/x-www-form-urlencoded' },
+                :idempotent => idempotent,
+                :host       => @host,
+                :method     => 'POST',
+                :parser     => parser
+              })
+            rescue Excon::Errors::HTTPStatusError => error
+              if match = error.message.match(/<Code>(.*)<\/Code><Message>(.*)<\/Message>/)
+                raise case match[1].split('.').last
+                when 'NotFound'
+                  Fog::AWS::Compute::NotFound.slurp(error, match[2])
+                else
+                  Fog::AWS::Compute::Error.slurp(error, "#{match[1]} => #{match[2]}")
+                end
               else
-                Fog::AWS::Compute::Error.slurp(error, "#{match[1]} => #{match[2]}")
+                raise error
               end
-            else
-              raise error
             end
-          end
 
-          response
+            response
+          end
         end
 
       end
