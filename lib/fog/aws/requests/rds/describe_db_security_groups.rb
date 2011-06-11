@@ -29,7 +29,26 @@ module Fog
       class Mock
 
         def describe_db_security_group(opts={})
-          Fog::Mock.not_implemented
+          security_group = opts.is_a?(String) ? opts : opts['DBSecurityGroupName']
+
+          security_group_results = self.data[:db_security_groups].values
+          if security_group
+            if data[:db_security_groups].key?(security_group)
+              security_group_results = [data[:db_security_groups][security_group]]
+            else
+              raise Fog::Service::NotFound.new("DBSecurityGroup #{security_group} not found")
+            end
+          end
+
+          response = Excon::Response.new
+
+          response.status = 200
+          response.body = {
+            'requestId' => Fog::AWS::Mock.request_id,
+            'DescribeDBSecurityGroupsResult' => {"DBSecurityGroups" => security_group_info}
+          }
+          response
+
         end
 
       end

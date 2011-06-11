@@ -53,8 +53,37 @@ module Fog
 
       class Mock
 
+        def self.data
+          owner_id = Fog::AWS::Mock.owner_id
+          @data ||= {
+            :owner_id => owner_id,
+
+            :db_security_groups => {
+              "default" => {
+                "OwnerId"=> owner_id,
+                "DBSecurityGroupName"=>"default",
+                "DBSecurityGroupDescription"=>"default",
+                "IPRanges"=>[{"Status"=>"authorized", "CIDRIP"=>"0.0.0.0/0"}],
+                "EC2SecurityGroups"=>[]
+              }
+            }
+          }
+        end
+
+        def reset
+          @data = nil
+        end
+
         def initialize(options={})
-          Fog::Mock.not_implemented
+          @aws_access_key_id = options[:aws_access_key_id]
+        end
+
+        def data
+          self.class.data[@aws_access_key_id]
+        end
+
+        def reset_data
+          self.class.data.delete(@aws_access_key_id)
         end
 
       end

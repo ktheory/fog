@@ -27,7 +27,22 @@ module Fog
       class Mock
 
         def create_db_security_group(name, description = name)
-          Fog::Mock.not_implemented
+          security_group = {
+            "OwnerId" => data[:owner_id],
+            "DBSecurityGroupName" => name,
+            "DBSecurityGroupDescription" => description,
+            "IPRanges" => [],
+            "EC2SecurityGroups" => []
+          }
+
+          self.data[:db_security_groups][name] ||= security_group
+
+          response = Excon::Response.new
+          response.body = {
+            'requestId' => Fog::AWS::Mock.request_id,
+            'CreateDBSecurityGroupResult' => {"DBSecurityGroup" => security_group}
+          }
+          response
         end
 
       end
