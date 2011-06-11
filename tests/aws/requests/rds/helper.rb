@@ -106,7 +106,7 @@ class AWS
         'ReadReplicaDBInstanceIdentifiers'=> [String],
         'ReadReplicaSourceDBInstanceIdentifier'=> Fog::Nullable::String
       }
-      
+
       CREATE_DB_INSTANCE = BASIC.merge({
         'CreateDBInstanceResult' => {
           'DBInstance' => INSTANCE
@@ -161,6 +161,34 @@ class AWS
           'DBSnapshot' => SNAPSHOT
         }
       })
+
+      # Security Groups
+
+      SECURITY_GROUP = {
+        "OwnerId"                    => String,
+        "DBSecurityGroupName"        => String,
+        "DBSecurityGroupDescription" => String,
+        "IPRanges"                   => Array,
+        "EC2SecurityGroups"          => Array
+      }
+
+
+      CREATE_DB_SECURITY_GROUP = BASIC.merge({
+        'CreateDBSecurityGroupResult' => { 'DBSecurityGroup' => SECURITY_GROUP }
+      })
+
+      DESCRIBE_DB_SECURITY_GROUP = BASIC.merge({
+        'DescribeDBSecurityGroupsResult' => { 'DBSecurityGroups' => [SECURITY_GROUP] }
+      })
+
+      AUTHORIZE_DB_SECURITY_GROUP_INGRESS = BASIC.merge({
+        'AuthorizeDBSecurityGroupIngressResult' => {'DBSecurityGroup' => SECURITY_GROUP }
+      })
+
+      REVOKE_DB_SECURITY_GROUP_INGRESS = BASIC.merge({
+        'RevokeDBSecurityGroupIngressResult' => {'DBSecurityGroup' => SECURITY_GROUP }
+      })
+
 
     end
 
