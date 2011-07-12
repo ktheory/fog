@@ -7,6 +7,7 @@ module Fog
 
     extend Fog::Provider
 
+    service(:acs,             'aws/acs')
     service(:auto_scaling,    'aws/auto_scaling')
     service(:cdn,             'cdn/aws')
     service(:compute,         'compute/aws')
