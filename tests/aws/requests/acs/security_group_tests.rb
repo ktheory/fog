@@ -1,4 +1,4 @@
-Shindo.tests('AWS::ACS | instance requests', ['aws', 'acs']) do
+Shindo.tests('AWS::ACS | security group requests', ['aws', 'acs']) do
 
   @security_group_name = 'fog-test'
   @security_group_description = 'Fog Test Group'
@@ -11,5 +11,16 @@ Shindo.tests('AWS::ACS | instance requests', ['aws', 'acs']) do
       returns(@security_group_description) { body['CacheSecurityGroup']['CacheSecurityGroupDescription'] }
       body
     end
+
+    tests('#delete_cache_security_group').formats(AWS::ACS::Formats::BASIC) do
+      body = AWS[:acs].delete_cache_security_group(@security_group_name).body
+    end
+  end
+
+  tests('failure') do
+    # TODO:
+    # Create a duplicate security group
+    # List a missing security group
+    # Delete a missing security group
   end
 end

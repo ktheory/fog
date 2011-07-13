@@ -23,7 +23,7 @@ module Fog
       #request :reset_cache_parameter_group
 
       request :create_cache_security_group
-      #request :delete_cache_security_group
+      request :delete_cache_security_group
       #request :describe_cache_security_groups
 
       #request :describe_engine_default_parameters

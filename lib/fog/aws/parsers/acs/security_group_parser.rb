@@ -2,8 +2,9 @@ module Fog
   module Parsers
     module AWS
       module ACS
+        require 'fog/aws/parsers/acs/base'
 
-        class SecurityGroupParser < Fog::Parsers::Base
+        class SecurityGroupParser < Base
 
           def reset
             super
@@ -30,6 +31,8 @@ module Fog
               @security_group["#{name}s"] << @ec2_group unless @ec2_group.empty?
             when 'EC2SecurityGroupName', 'EC2SecurityGroupOwnerId', 'Status'
               @ec2_group[name] = value
+            else
+              super
             end
           end
         end
