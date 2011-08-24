@@ -2,7 +2,7 @@ require 'fog/core/model'
 
 module Fog
   module AWS
-    class ACS
+    class ElastiCache
 
       class SecurityGroup < Fog::Model
 

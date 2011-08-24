@@ -1,9 +1,9 @@
 module Fog
   module AWS
-    class ACS
+    class ElastiCache
       class Real
 
-        require 'fog/aws/parsers/acs/single_security_group'
+        require 'fog/aws/parsers/elasticache/single_security_group'
 
         # Authorize ingress to a CacheSecurityGroup using EC2 Security Groups
         #
@@ -20,7 +20,7 @@ module Fog
             'CacheSecurityGroupName' => name,
             'EC2SecurityGroupName' => ec2_name,
             'EC2SecurityGroupOwnerId' => ec2_owner_id,
-            :parser => Fog::Parsers::AWS::ACS::SingleSecurityGroup.new
+            :parser => Fog::Parsers::AWS::ElastiCache::SingleSecurityGroup.new
           })
         end
 

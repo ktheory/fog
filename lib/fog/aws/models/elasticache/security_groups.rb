@@ -1,12 +1,12 @@
 require 'fog/core/collection'
-require 'fog/aws/models/acs/security_group'
+require 'fog/aws/models/elasticache/security_group'
 
 module Fog
   module AWS
-    class ACS
+    class ElastiCache
 
       class SecurityGroups < Fog::Collection
-        model Fog::AWS::ACS::SecurityGroup
+        model Fog::AWS::ElastiCache::SecurityGroup
 
         def all
           data = connection.describe_cache_security_groups.body['CacheSecurityGroups']
@@ -16,7 +16,7 @@ module Fog
         def get(identity)
           data = connection.describe_cache_security_groups('CacheSecurityGroupName' => identity).body['CacheSecurityGroups'].first
           new(data)
-        rescue Fog::AWS::ACS::NotFound
+        rescue Fog::AWS::ElastiCache::NotFound
           nil
         end
       end

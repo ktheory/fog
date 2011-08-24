@@ -1,9 +1,9 @@
 module Fog
   module Parsers
     module AWS
-      module ACS
+      module ElastiCache
 
-        require 'fog/aws/parsers/acs/base'
+        require 'fog/aws/parsers/elasticache/base'
 
         # Base parser for ResponseMetadata, RequestId
         class Base < Fog::Parsers::Base

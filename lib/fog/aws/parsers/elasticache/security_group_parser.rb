@@ -1,8 +1,8 @@
 module Fog
   module Parsers
     module AWS
-      module ACS
-        require 'fog/aws/parsers/acs/base'
+      module ElastiCache
+        require 'fog/aws/parsers/elasticache/base'
 
         class SecurityGroupParser < Base
 

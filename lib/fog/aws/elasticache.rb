@@ -1,13 +1,13 @@
 module Fog
   module AWS
-    class ACS < Fog::Service
+    class ElastiCache < Fog::Service
 
       class IdentifierTaken < Fog::Errors::Error; end
 
       requires :aws_access_key_id, :aws_secret_access_key
       recognizes :region, :host, :path, :port, :scheme, :persistent
 
-      request_path 'fog/aws/requests/acs'
+      request_path 'fog/aws/requests/elasticache'
 
       #request :create_cache_cluster
       #request :delete_cache_cluster
@@ -31,7 +31,7 @@ module Fog
 
       #request :describe_events
 
-      model_path 'fog/aws/models/acs'
+      model_path 'fog/aws/models/elasticache'
       # model :server
       # collection :servers
       model :security_group
@@ -55,7 +55,7 @@ module Fog
           options[:region] ||= 'us-east-1'
           @host = options[:host] || case options[:region]
           when 'us-east-1'
-            'acsvc.us-east-1.amazonaws.com'
+            'elasticachevc.us-east-1.amazonaws.com'
             #TODO: Support other regions
           else
             raise ArgumentError, "Unknown region: #{options[:region].inspect}"
@@ -101,9 +101,9 @@ module Fog
             if match = error.message.match(/<Code>(.*)<\/Code>/m)
               case match[1]
               when 'CacheSecurityGroupNotFound'
-                raise Fog::AWS::ACS::NotFound
+                raise Fog::AWS::ElastiCache::NotFound
               when 'CacheSecurityGroupAlreadyExists'
-                raise Fog::AWS::ACS::IdentifierTaken
+                raise Fog::AWS::ElastiCache::IdentifierTaken
               when 'InvalidParameterValue'
                 raise Fog::AWS::ACE::InvalidInstance
               else

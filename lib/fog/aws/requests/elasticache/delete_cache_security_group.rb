@@ -1,9 +1,9 @@
 module Fog
   module AWS
-    class ACS
+    class ElastiCache
       class Real
 
-        require 'fog/aws/parsers/acs/base'
+        require 'fog/aws/parsers/elasticache/base'
 
         # deletes a cache security group
         #
@@ -16,7 +16,7 @@ module Fog
           request({
             'Action' => 'DeleteCacheSecurityGroup',
             'CacheSecurityGroupName' => name,
-            :parser => Fog::Parsers::AWS::ACS::Base.new
+            :parser => Fog::Parsers::AWS::ElastiCache::Base.new
           })
         end
       end
