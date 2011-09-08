@@ -118,6 +118,7 @@ module Fog
                   'default' => {
                     'groupDescription'  => 'default group',
                     'groupName'         => 'default',
+                    'ipPermissionsEgress' => [],
                     'ipPermissions'     => [
                       {
                         'groups'      => [{'groupName' => 'default', 'userId' => owner_id}],

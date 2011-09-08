@@ -10,10 +10,9 @@ module Fog
         # ==== Parameters
         # * group_name<~String> - Name of group
         # * options<~Hash>:
-        #   * 'SourceSecurityGroupName'<~String> - Name of security group to authorize
-        #   * 'SourceSecurityGroupOwnerId'<~String> - Name of owner to authorize
-        #   or
-        #   * 'CidrIp' - CIDR range
+        #   * 'SourceSecurityGroupName'<~String> - Name of security group to authorize (required unless CidrIp is specified)
+        #   * 'SourceSecurityGroupOwnerId'<~String> - Name of owner to authorize (require unless CidrIp is specified)
+        #   * 'CidrIp' - CIDR range (required unless GroupName and OwnerId are specified)
         #   * 'FromPort' - Start of port range (or -1 for ICMP wildcard)
         #   * 'GroupName' - Name of group to modify
         #   * 'IpProtocol' - Ip protocol, must be in ['tcp', 'udp', 'icmp']
@@ -57,13 +56,15 @@ module Fog
           if group
             group['ipPermissions'] ||= []
             if group_name && source_group_name = options['SourceSecurityGroupName']
-              ['tcp', 'udp'].each do |protocol|
+              # If IpProtocol, FromPort, and ToPort are blank, default to AWS authorizes ports 1-65535 for tcp and udp
+              protocols = options['IpProtocol'] || ['tcp', 'udp']
+              protocols.to_a.each do |protocol|
                 group['ipPermissions'] << {
                   'groups'      => [{'groupName' => source_group_name, 'userId' => (options['SourceSecurityGroupOwnerId'] || self.data[:owner_id]) }],
-                  'fromPort'    => 1,
+                  'fromPort'    => options['FromPort'] || 1,
                   'ipRanges'    => [],
                   'ipProtocol'  => protocol,
-                  'toPort'      => 65535
+                  'toPort'      => options['ToPort'] || 65535
                 }
               end
               group['ipPermissions'] << {

@@ -25,25 +25,17 @@ Shindo.tests('Fog::Compute[:aws] | security group requests', ['aws']) do
       Fog::Compute[:aws].create_security_group('fog_security_group', 'tests group').body
     end
 
-    tests("#authorize_security_group_ingress('fog_security_group', {'FromPort' => 80, 'IpProtocol' => 'tcp', 'toPort' => 80})").formats(AWS::Compute::Formats::BASIC) do
-      Fog::Compute[:aws].authorize_security_group_ingress(
-        'fog_security_group',
-        {
-          'FromPort' => 80,
-          'IpProtocol' => 'tcp',
-          'ToPort' => 80,
-        }
-      ).body
-    end
-
-    tests("#authorize_security_group_ingress('fog_security_group', {'SourceSecurityGroupName' => 'fog_security_group', 'SourceSecurityGroupOwnerId' => '#{@owner_id}'})").formats(AWS::Compute::Formats::BASIC) do
-      Fog::Compute[:aws].authorize_security_group_ingress(
-        'fog_security_group',
-        {
-          'SourceSecurityGroupName'     => 'fog_security_group',
-          'SourceSecurityGroupOwnerId'  => @owner_id
-        }
-      ).body
+    tests("#authorize_security_group_ingress") do
+      ingress_options = [
+        {'FromPort' => 80, 'IpProtocol' => 'tcp', 'ToPort' => 80},
+        {'SourceSecurityGroupName' => 'fog_security_group', 'SourceSecurityGroupOwnerId' => @owner_id, 'FromPort' => 80, 'IpProtocol' => 'tcp', 'ToPort' => 80},
+        {'SourceSecurityGroupName' => 'fog_security_group', 'SourceSecurityGroupOwnerId' => @owner_id}
+      ]
+      ingress_options.each do |ingress_option|
+        tests("with #{ingress_option.inspect}").formats(AWS::Compute::Formats::BASIC) do
+          Fog::Compute[:aws].authorize_security_group_ingress( 'fog_security_group', ingress_option).body
+        end
+      end
     end
 
     tests("#describe_security_groups").formats(@security_groups_format) do
