@@ -43,6 +43,15 @@ module Fog
           connection.servers.get(instance_id)
         end
 
+        def restore(new_instance_id, opts={})
+          opts['DBInstanceClass'] ||= opts[:flavor_id] || 'db.m1.small'
+          opts['MultiAZ']         ||= opts[:multi_az]
+          opts[['AutoMinorVersionUpgrade'] ||= opts[:auto_minor_version_upgrade]
+          opts['AvailabilityZone'] ||= opts[:availability_zone]
+
+          connection.restore_db_instance_from_db_snapshot(id, new_instance_id, opts)
+        end
+
       end
     end
   end
